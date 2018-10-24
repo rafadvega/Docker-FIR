@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  database-fir:
+    image: mariadb:10.3
+    hostname: fir_database
+    container_name: fir-database
+    environment:
+      MYSQL_DATABASE: ""
+      MYSQL_USER: ""
+      MYSQL_PASSWORD: ""
+      MYSQL_ROOT_PASSWORD: ""
+    networks:
+        - docker_fir    
+  fir:
+    image: rdevega/fir:1.0
+    build: ./
+    hostname: fir_rdevega
+    container_name: fir-rdevega-fir
+    ports:
+      - "443:443"
+      - "80:80"
+    environment:
+      DB_DATABASE: ""
+      DB_USER: ""
+      DB_PASSWORD: ""
+      DB_HOST: ""
+      DB_PORT: ""
+    depends_on:
+      - database-fir
+    networks:
+      - docker_fir
+
+networks:
+  docker_fir:
+    driver: bridge
+    ipam:
+      config:
+      - subnet: 172.25.0.0/24
